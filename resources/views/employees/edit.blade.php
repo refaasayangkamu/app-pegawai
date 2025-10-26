@@ -1,48 +1,74 @@
-<h2>Edit Data Pegawai</h2>
-<form action="{{ route('employees.update', $employee->id) }}" method="POST">
-@csrf
-@method('PUT')
-<table>
-<tr>
-<td>Nama Lengkap</td>
-<td><input type="text" name="nama_lengkap" value="{{ old('nama_lengkap', $employee->nama_lengkap) }}"></td>
-</tr>
-<tr>
-<td>Email</td>
-<td><input type="email" name="email" value="{{ old('email', $employee->email) }}"></td>
-</tr>
-<tr>
-<td>Nomor Telepon</td>
-<td><input type="text" name="nomor_telepon" value="{{ old('nomor_telepon', $employee->nomor_telepon) }}"></td>
-</tr>
-<tr>
-<td>Tanggal Lahir</td>
-<td><input type="date" name="tanggal_lahir" value="{{ old('tanggal_lahir', $employee->tanggal_lahir) }}"></td>
-</tr>
-<tr>
-<td>Alamat</td>
-<td><input type="text" name="alamat" value="{{ old('alamat', $employee->alamat) }}"></td>
-</tr>
-<tr>
-<td>Tanggal Masuk</td>
-<td><input type="date" name="tanggal_masuk" value="{{ old('tanggal_masuk', $employee->tanggal_masuk) }}"></td>
-</tr>
-<tr>
-<td>Status</td>
-<td>
-<select name="status">
-<option value="aktif" {{ old('status', $employee->status) == 'aktif' ? 'selected' : '' }}>Aktif</option>
-<option value="tidak aktif" {{ old('status', $employee->status) == 'tidak aktif' ? 'selected' : '' }}>Tidak
+@extends('master')
 
-Aktif</option>
+@section('title', 'Edit Karyawan')
+@section('page-title', 'Edit Karyawan')
 
-</select>
-</td>
-</tr>
-<tr>
-<td colspan="2">
-<button type="submit">Update</button>
-</td>
-</tr>
-</table>
-</form>
+@section('content')
+<div class="container">
+    @if ($errors->any())
+        <div class="alert alert-danger">
+            <strong>Error:</strong>
+            <ul>
+                @foreach ($errors->all() as $error)
+                    <li>{{ $error }}</li>
+                @endforeach
+            </ul>
+        </div>
+    @endif
+
+    <form action="{{ route('employees.update', $employee->id) }}" method="POST">
+        @csrf
+        @method('PUT')
+        
+        <div class="mb-3">
+            <label for="nama_depan" class="form-label">Nama Depan</label>
+            <input type="text" name="nama_depan" class="form-control" id="nama_depan" value="{{ $employee->nama_depan }}">
+        </div>
+        <div class="mb-3">
+            <label for="nama_belakang" class="form-label">Nama Belakang</label>
+            <input type="text" name="nama_belakang" class="form-control" id="nama_belakang" value="{{ $employee->nama_belakang }}">
+        </div>
+        <div class="mb-3">
+            <label for="email" class="form-label">Email</label>
+            <input type="email" name="email" class="form-control" id="email" value="{{ $employee->email }}">
+        </div>
+        <div class="mb-3">
+            <label for="telepon" class="form-label">Telepon</label>
+            <input type="text" name="telepon" class="form-control" id="telepon" value="{{ $employee->telepon }}">
+        </div>
+        <div class="mb-3">
+            <label for="tanggal_masuk" class="form-label">Tanggal Masuk</label>
+            <input type="date" name="tanggal_masuk" class="form-control" id="tanggal_masuk" value="{{ $employee->tanggal_masuk }}">
+        </div>
+        
+        {{-- Dropdown untuk Foreign Key Departemen --}}
+        <div class="mb-3">
+            <label for="departemen_id" class="form-label">Departemen</label>
+            <select name="departemen_id" id="departemen_id" class="form-select">
+                <option value="">Pilih Departemen</option>
+                @foreach ($departments as $dept)
+                    <option value="{{ $dept->id }}" {{ $employee->departemen_id == $dept->id ? 'selected' : '' }}>
+                        {{ $dept->nama_departemen }}
+                    </option>
+                @endforeach
+            </select>
+        </div>
+        
+        {{-- Dropdown untuk Foreign Key Jabatan --}}
+        <div class="mb-3">
+            <label for="jabatan_id" class="form-label">Jabatan (Position)</label>
+            <select name="jabatan_id" id="jabatan_id" class="form-select">
+                <option value="">Pilih Jabatan</option>
+                @foreach ($positions as $pos)
+                    <option value="{{ $pos->id }}" {{ $employee->jabatan_id == $pos->id ? 'selected' : '' }}>
+                        {{ $pos->nama_jabatan }}
+                    </option>
+                @endforeach
+            </select>
+        </div>
+
+        <button type="submit" class="btn btn-primary">Update</button>
+        <a href="{{ route('employees.index') }}" class="btn btn-secondary">Batal</a>
+    </form>
+</div>
+@endsection

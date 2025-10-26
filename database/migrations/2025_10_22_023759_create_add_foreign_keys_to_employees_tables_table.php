@@ -11,17 +11,28 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('add_foreign_keys_to_employees_tables', function (Blueprint $table) {
-            $table->id();
-            $table->timestamps();
+    Schema::table('employees', function (Blueprint $table) {
+    $table->unsignedBigInteger('departemen_id')->after('tanggal_masuk');
+    $table->unsignedBigInteger('jabatan_id')->after('departemen_id');
+
+    $table->foreign('departemen_id')
+        ->references('id')
+        ->on('departments')
+        ->onDelete('cascade');
+    $table->foreign('jabatan_id')
+        ->references('id')
+        ->on('positions')
+        ->onDelete('cascade');
+
         });
     }
 
-    /**
-     * Reverse the migrations.
-     */
     public function down(): void
     {
-        Schema::dropIfExists('add_foreign_keys_to_employees_tables');
+    Schema::table('employees', function (Blueprint $table) {
+        $table->dropForeign(['departemen_id']);
+        $table->dropForeign(['jabatan_id']);
+        $table->dropColumn(['departemen_id', 'jabatan_id']);
+        });
     }
 };
